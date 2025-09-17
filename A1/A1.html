@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>A1 Exploratory Data Analysis</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+
+<h1>A1 Exploratory Data Analysis</h1>
+
+<h2>Dataset Introduction</h2>
+<p>
+  This report explores the dataset <code>fatal_selected_clean.csv</code>, which contains records of accidental deaths 
+  in Allegheny County. The dataset includes key fields such as age, incident_zip, case_year, and death_date_and_time. 
+  Invalid ZIP codes were removed, and small inconsistencies between case_year and death_date_and_time were noted.
+</p>
+
+<h2>Initial Analysis Questions</h2>
+<ol>
+  <li>What is the distribution of deaths across different age groups?</li>
+  <li>How are accidental deaths distributed across different ZIP codes?</li>
+  <li>How have death cases changed over time?</li>
+</ol>
+
+<h2>Discoveries & Insights</h2>
+
+<h3>Q1: Age Distribution</h3>
+<div id="q1a"></div>
+<p>Figure 1. Distribution of deaths by exact age.</p>
+
+<h3>Q2: ZIP Distribution</h3>
+<div id="q2"></div>
+<p>Figure 2. Top 10 ZIP codes by number of deaths.</p>
+
+<h3>Q3: Time Trend</h3>
+<div id="q3"></div>
+<p>Figure 3. Deaths over time (based on death_date_and_time).</p>
+
+
+
+<h2>Summary</h2>
+<p>
+  The analysis shows that deaths are concentrated among middle-aged adults, a few ZIP codes report disproportionately 
+  high cases, and temporal patterns reveal year-to-year changes. Limitations include the lack of socioeconomic context 
+  for ZIP codes and occasional mismatches between case_year and death_date_and_time.
+</p>
+
+<script>
+const specQ1Exact = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 600,
+    "data": {
+     "url": "1c59b26a-1684-4bfb-92f7-205b947530cf.csv",
+     "format": {"type": "csv"}
+    },
+    "transform": [
+        {"calculate": "toNumber(datum.age)", "as": "age_num"}],
+    "mark": {"type": "bar", "size": 5},
+    "encoding": {
+    "x": {
+        "field": "age",   
+        "type": "nominal",
+        "sort": {"field": "age_num", "op": "min", "order": "ascending"},
+        "axis": {"title": "Age", "labelAngle": 90},
+        "scale": {"band": 0.1}},
+    "y": {"aggregate": "count", "title": "Count"}}
+};
+vegaEmbed("#q1a", specQ1Exact, {actions: false});
+
+const specQ2Zip = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 600,
+    "data": {
+        "url": "1c59b26a-1684-4bfb-92f7-205b947530cf.csv",
+        "format": {"type": "csv"}},
+    "transform": [
+        {"aggregate": [{"op": "count", "as": "n"}], "groupby": ["incident_zip"]},
+        {"filter": "isValid(datum.incident_zip)"},
+        {"window": [{"op": "rank", "as": "rank"}], "sort": [{"field": "n", "order": "descending"}]},
+        {"filter": "datum.rank <= 10"},
+        {"sort": [{"field": "n", "order": "descending"}]}],
+    "mark": {"type": "bar"},
+    "encoding": {
+        "x": {"field": "incident_zip", "type": "nominal", "title": "ZIP Code", "sort": "-y"},
+        "y": {"field": "n", "type": "quantitative", "title": "Count"},
+        "tooltip": [{"field": "incident_zip"}, {"field": "n", "type": "quantitative"}]}
+};
+vegaEmbed("#q2", specQ2Zip, {actions: false});
+
+const specQ3 = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 600,
+    "data": {
+        "url": "1c59b26a-1684-4bfb-92f7-205b947530cf.csv",
+        "format": {"type": "csv"}},
+    "mark": {"type": "line", "point": true},
+    "encoding": {
+    "x": {
+      "field": "death_date_and_time",
+      "type": "temporal",
+      "timeUnit": "year",
+      "title": "Year"
+    },
+    "y": {"aggregate": "count", "title": "Count"}
+  }
+};
+vegaEmbed("#q3", specQ3, {actions:false});
+
+</script>
+
+</body>
+</html>
+ 
