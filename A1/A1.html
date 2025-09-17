@@ -20,7 +20,7 @@
 
 <h2>Initial Analysis Questions</h2>
 <ol>
-  <li>What is the distribution of deaths across different age groups?</li>
+  <li>What is the distribution of deaths across different ages?</li>
   <li>How are accidental deaths distributed across different ZIP codes?</li>
   <li>How have death cases changed over time?</li>
 </ol>
@@ -30,30 +30,46 @@
 <h3>Q1: Age Distribution</h3>
 <div id="q1a"></div>
 <p>Figure 1. Distribution of deaths by exact age.</p>
+<p>The graph shows that the distribution of accidental drug deaths is roughly normal, 
+  with most cases concentrated between ages 24 and 63. 
+  The counts around ages 34 and 51 are noticeably higher than other ages. 
+  This may connect to higher medication use in young adulthood and more social activity during these years, 
+  which could increase drug risks.</p>
 
 <h3>Q2: ZIP Distribution</h3>
 <div id="q2"></div>
 <p>Figure 2. Top 10 ZIP codes by number of deaths.</p>
+<p>The chart indicates that ZIP 15210 reports the highest number of accidental deaths. 
+  Both 15210 and 15212 stand out compared to other areas. 
+  Such differences may be linked to population density, 
+  urbanization, or local economic conditions.</p>
 
 <h3>Q3: Time Trend</h3>
 <div id="q3"></div>
 <p>Figure 3. Deaths over time (based on death_date_and_time).</p>
+<p>From 2007 to 2023, the trend in accidental deaths moves upward, 
+  with a clear peak around 2015–2017. 
+  After 2023, a sharp decline appears. 
+  These temporal changes may relate to drug prevalence patterns, 
+  while the recent decline could also be influenced by the global pandemic.</p>
 
-
+<h2>Data Quality Note</h2>
+<p>Some ZIP code values were invalid and were removed during preprocessing. 
+  Small inconsistencies were also found between case_year and death_date_and_time, 
+  but they were considered reasonable and did not affect the overall analysis.</p>
 
 <h2>Summary</h2>
 <p>
   The analysis shows that deaths are concentrated among middle-aged adults, a few ZIP codes report disproportionately 
   high cases, and temporal patterns reveal year-to-year changes. Limitations include the lack of socioeconomic context 
-  for ZIP codes and occasional mismatches between case_year and death_date_and_time.
-</p>
+  for ZIP codes.</p>
 
 <script>
 const specQ1Exact = {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "width": 600,
     "data": {
-     "url": "1c59b26a-1684-4bfb-92f7-205b947530cf.csv",
+     "url": "https://raw.githubusercontent.com/VCplus-512/05619/main/A1/1c59b26a-1684-4bfb-92f7-205b947530cf.csv",
      "format": {"type": "csv"}
     },
     "transform": [
@@ -74,7 +90,7 @@ const specQ2Zip = {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "width": 600,
     "data": {
-        "url": "1c59b26a-1684-4bfb-92f7-205b947530cf.csv",
+        "url": "https://raw.githubusercontent.com/VCplus-512/05619/main/A1/1c59b26a-1684-4bfb-92f7-205b947530cf.csv",
         "format": {"type": "csv"}},
     "transform": [
         {"aggregate": [{"op": "count", "as": "n"}], "groupby": ["incident_zip"]},
@@ -94,7 +110,7 @@ const specQ3 = {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "width": 600,
     "data": {
-        "url": "1c59b26a-1684-4bfb-92f7-205b947530cf.csv",
+        "url": "https://raw.githubusercontent.com/VCplus-512/05619/main/A1/1c59b26a-1684-4bfb-92f7-205b947530cf.csv",
         "format": {"type": "csv"}},
     "mark": {"type": "line", "point": true},
     "encoding": {
